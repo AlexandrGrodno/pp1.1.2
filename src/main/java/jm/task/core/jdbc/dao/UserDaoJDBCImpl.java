@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private String sqlCommand;
+
     public UserDaoJDBCImpl() {
 
     }
-
     Connection connection =  Util.getConnection();
     public void createUsersTable() {
 
@@ -21,8 +20,6 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void dropUsersTable(){
