@@ -19,68 +19,58 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        sqlCommand = "CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(50), lastName VARCHAR(50),age INT )";
-        Session session = Util.getSessionFactory().openSession();
-        try {
+
+        try( Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.createSQLQuery(sqlCommand).addEntity(User.class).executeUpdate();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(50), lastName VARCHAR(50),age INT )")
+                    .addEntity(User.class)
+                    .executeUpdate();
             session.getTransaction().commit();
 
-        } finally {
-            session.close();
         }
     }
 
     @Override
     public void dropUsersTable() {
-        sqlCommand = "DROP TABLE IF EXISTS users ";
-        Session session = Util.getSessionFactory().openSession();
 
-        try {
+        try (Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.createSQLQuery(sqlCommand).addEntity(User.class).executeUpdate();
+            session.createSQLQuery("DROP TABLE IF EXISTS users ")
+                    .addEntity(User.class)
+                    .executeUpdate();
             session.getTransaction().commit();
 
-        }finally {
-            session.close();
         }
-
     }
+
+
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Session session = Util.getSessionFactory().openSession();
-
-        try{
+        try (Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.save(new User(name,lastName,age));
             session.getTransaction().commit();
             System.out.printf("User  с именем %s добавлен в таблицу \n",name);
-        }finally {
-            session.close();
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        Session session = Util.getSessionFactory().openSession();
-
-        try{
+        try(Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.createQuery("delete  User where id = " + id).executeUpdate();
-            //session.delete(session.get(User.class,1));
+            Query query = session.createQuery("delete  User where id = :id");
+            query.setParameter("id", (int)id);
+            query.executeUpdate();
             session.getTransaction().commit();
 
-        }finally {
-            session.close();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
         List<User> listUser;
-        Session session = Util.getSessionFactory().openSession();
-        try{
+        try(Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
             listUser = session.createQuery("from User").getResultList();
             session.getTransaction().commit();
@@ -88,10 +78,6 @@ public class UserDaoHibernateImpl implements UserDao {
 //            CriteriaQuery critQuery = critBuild.createQuery(User.class);
 //            Root<User> root = critQuery.from(User.class);
 //            listUser = session.createQuery(critQuery).getResultList();
-
-
-        }finally {
-            session.close();
         }
         listUser.stream().forEach(System.out::println);
         return listUser;
@@ -99,17 +85,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        Session session = Util.getSessionFactory().openSession();
-
-        try{
+        try(Session session = Util.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.createQuery("delete  User " ).executeUpdate();
-
             session.getTransaction().commit();
-
-        }finally {
-            session.close();
         }
-
     }
 }
