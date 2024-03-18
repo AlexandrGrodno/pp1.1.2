@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    String sqlCommand;
 
     public UserDaoHibernateImpl() {}
-
 
     @Override
     public void createUsersTable() {
