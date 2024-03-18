@@ -12,18 +12,17 @@ public class Util {
     public static final String USERNAME = "root";
     public static final String PASSWORD ="52532137";
 
-public static Connection connection ;
+    private  static  Connection connection ;
 
 
-    public Util()  {
+
+    public static Connection getConnection(){
         try {
             connection=DriverManager.getConnection(URL,USERNAME,PASSWORD);
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-    }
-    public static Connection getConnection(){
         return connection;
     }
 }
